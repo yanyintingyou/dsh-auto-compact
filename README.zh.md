@@ -69,3 +69,5 @@ agent 从「运行中」回到「空闲」时，插件按顺序判断：
 ## 许可
 
 MIT，见 [LICENSE](LICENSE)。
+
+[![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)
