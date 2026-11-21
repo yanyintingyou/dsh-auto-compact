@@ -2,4 +2,9 @@
     - id: auto-compact
       name: '@local/dsh-auto-compact'
       config:
-        thresholdTokens: 500000
+        hardThresholdTokens: 500000
+        softRatio: 0.8
+        quietWindowMs: 1800000
+        minGrowthTokens: 60000
+        boundary: both
+        dryRun: false

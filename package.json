@@ -1,9 +1,9 @@
 {
   "name": "@local/dsh-auto-compact",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
-  "description": "Compact a session at turn end once its context reaches a token threshold",
+  "description": "Compact a session at a good moment once its context passes a threshold",
   "license": "MIT",
   "exports": {
     ".": "./index.js",
@@ -15,7 +15,8 @@
     "cordis.patch.yml",
     "locale/*.json",
     "icon.svg",
-    "README.md"
+    "README.md",
+    "README.zh.md"
   ],
   "dsh": {
     "bundle": {
