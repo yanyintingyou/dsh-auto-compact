@@ -1,5 +1,7 @@
 # dsh-auto-compact
 
+[![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)
+
 [English](README.md) | [中文](README.zh.md)
 
 A DeepSeek Harness Host plugin. At the end of every reply it measures the context, then compacts at the hard threshold or waits for a good moment past the soft one. Compaction calls the session preset's own service, so the result matches `/compact`.
@@ -69,5 +71,3 @@ The compaction request reads the history it replaces. A quiet-window compaction 
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
-[![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)

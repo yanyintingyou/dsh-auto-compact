@@ -1,5 +1,7 @@
 # dsh-auto-compact
 
+[![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)
+
 [English](README.md) | [中文](README.zh.md)
 
 DeepSeek Harness 的 Host 端插件。每轮回复结束时检查一次上下文：到硬阈值就直接压，到软阈值就等一个合适的时机再压。压缩调用会话 preset 自带的压缩服务，产物和 `/compact` 一样。
@@ -69,5 +71,3 @@ agent 从「运行中」回到「空闲」时，插件按顺序判断：
 ## 许可
 
 MIT，见 [LICENSE](LICENSE)。
-
-[![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)
