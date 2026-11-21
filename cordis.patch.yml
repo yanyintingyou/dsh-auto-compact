@@ -1,0 +1,5 @@
+- insert:
+    - id: auto-compact
+      name: '@local/dsh-auto-compact'
+      config:
+        thresholdTokens: 500000

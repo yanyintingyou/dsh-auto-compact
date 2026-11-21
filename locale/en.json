@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "End-of-turn compaction",
+    "description": "Compact the session history automatically when a reply finishes once the estimated context reaches a token threshold (500K by default) — the same work as running /compact. Change the threshold with thresholdTokens in cordis.patch.yml. Compaction uses the compression service of the session's current preset and is skipped when that preset mounts none. It adds one model request for the summary, and its result is identical to /compact. Turn the plugin off to fall back to the built-in policy, which compacts between steps as a fraction of the context window."
+  }
+}

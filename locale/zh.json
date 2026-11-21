@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "会话结束自动压缩",
+    "description": "上下文估算达到阈值（默认 50 万 token）时，在每轮回复结束时自动压缩会话历史，等价于自动执行 /compact。阈值在 cordis.patch.yml 的 thresholdTokens 里改；压缩走当前会话所选 preset 的压缩服务，preset 未挂压缩时自动跳过。压缩会额外发起一次模型请求生成摘要，产物和 /compact 相同。关掉这个插件就回到 DSH 内建策略：在每一步之前按上下文窗口比例压缩。"
+  }
+}
