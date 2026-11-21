@@ -8,7 +8,7 @@ A DeepSeek Harness Host plugin. At the end of every reply it measures the contex
 
 The agent returns to idle. The plugin checks the context:
 
-1. Less than `minGrowthTokens` (60,000 by default) since the last compaction: do nothing.
+1. Less than `minGrowthTokens` (100,000 by default) since the last compaction: do nothing.
 2. At or above `hardThresholdTokens` (500,000): compact now.
 3. At or above the soft threshold (hard × `softRatio`, 0.8 by default, which is 400,000): wait for a boundary.
    - `quiet`: no new input for `quietWindowMs` (30 minutes by default).
@@ -37,7 +37,7 @@ The package ships no Client half, so nothing changes in the browser.
     hardThresholdTokens: 500000   # hard threshold
     softRatio: 0.8                # soft threshold = hard × 0.8
     quietWindowMs: 1800000        # quiet window, 30 minutes
-    minGrowthTokens: 60000        # minimum growth between compactions
+    minGrowthTokens: 100000       # minimum growth between compactions
     boundary: both                # quiet | milestone | both
     dryRun: false                 # true records decisions without compacting
 ```
@@ -55,6 +55,8 @@ The trigger is `agent/status` turning `idle`. At that point `compactNow` takes t
 Judgement reads public interfaces only: `ctx.goals.get(agent)` for the goal phase, `sessionProjections.stateOf(session, 'todos')` for the todo list, `ctx.tokenMeter.measure(session).totalTokens` for the size, and `ctx.timeout` for the quiet window. The todo projection is read only after the context enters the soft range, so most turns skip the materialization.
 
 Subagent sessions take the hard path alone.
+
+The compaction request reads the history it replaces. A quiet-window compaction usually runs after the provider's prefix cache expired, so the summary pays cold input prices. A milestone compaction lands right after the turn and usually still hits the warm prefix. Milestones save tokens. The quiet window saves you the wait.
 
 ## Limits
 

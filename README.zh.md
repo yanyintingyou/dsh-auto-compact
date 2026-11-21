@@ -8,7 +8,7 @@ DeepSeek Harness 的 Host 端插件。每轮回复结束时检查一次上下文
 
 agent 从「运行中」回到「空闲」时，插件按顺序判断：
 
-1. 距上次压缩的增长不到 `minGrowthTokens`（默认 60000），本轮不做任何事。
+1. 距上次压缩的增长不到 `minGrowthTokens`（默认 100000），本轮不做任何事。
 2. 上下文达到 `hardThresholdTokens`（默认 500000），立刻压。
 3. 上下文达到软阈值（硬阈值 × `softRatio`，默认 0.8，即 400000），看边界：
    - `quiet`：`quietWindowMs`（默认 30 分钟）内没有新输入就压；
@@ -37,7 +37,7 @@ agent 从「运行中」回到「空闲」时，插件按顺序判断：
     hardThresholdTokens: 500000   # 硬阈值
     softRatio: 0.8                # 软阈值 = 硬阈值 × 0.8
     quietWindowMs: 1800000        # 安静窗口，30 分钟
-    minGrowthTokens: 60000        # 两次压缩之间的最小增长
+    minGrowthTokens: 100000       # 两次压缩之间的最小增长
     boundary: both                # quiet | milestone | both
     dryRun: false                 # true 时只记录决策，不压缩
 ```
@@ -55,6 +55,8 @@ agent 从「运行中」回到「空闲」时，插件按顺序判断：
 判定只读公开接口：goal 状态取 `ctx.goals.get(agent)` 的 `phase`，待办取 `sessionProjections.stateOf(session, 'todos')`，上下文规模取 `ctx.tokenMeter.measure(session).totalTokens`，安静窗口用 `ctx.timeout`。待办投影只在进入软区间后读取，避免每轮都物化一遍投影。
 
 子会话只走硬阈值，机会压缩留给顶层会话。
+
+压缩请求的输入就是被压掉的那段历史。安静窗口触发时，上一次请求的前缀缓存多半已经过期，摘要按冷输入计价；里程碑触发紧跟在回合结束之后，通常还能吃到热缓存。要省 token 靠里程碑，要避开等摘要的延迟就用安静窗口。
 
 ## 限制
 

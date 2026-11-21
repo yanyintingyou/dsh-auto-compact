@@ -17,10 +17,13 @@ const DEFAULTS = {
   hardThresholdTokens: 500_000,
   softRatio: 0.8,
   quietWindowMs: 1_800_000,
-  minGrowthTokens: 60_000,
+  minGrowthTokens: 100_000,
   boundary: 'both',
   dryRun: false,
 }
+
+/** 预筛余量：上次请求之后 surface 还可能新增的量。 */
+const PRESSURE_CUSHION = 20_000
 
 /** 取一个正数配置值。 */
 function positive(value, fallback) {
@@ -60,7 +63,12 @@ export function apply(ctx, config = {}) {
   }
 
   const tokensOf = agent => ctx.tokenMeter.measure(agent.session).totalTokens
-  const grew = (agent, state) => tokensOf(agent) - state.compactedTokens >= growth
+
+  /** 上次请求的 prompt 大小；拿它预筛，避开 O(surface) 的精确测量。 */
+  const pressureOf = agent => ctx.tokenMeter.contextPressure(agent.session).pressureTokens
+
+  /** 自上次压缩以来的增长是否够。 */
+  const grew = (tokens, state) => tokens - state.compactedTokens >= growth
 
   function cancelTimer(state) {
     if (state.timer !== undefined) {
@@ -151,7 +159,7 @@ export function apply(ctx, config = {}) {
     const state = stateOf(agent)
     if (state.busy || agent.status !== 'idle') return
     const tokens = tokensOf(agent)
-    if (tokens < soft || !grew(agent, state)) return
+    if (tokens < soft || !grew(tokens, state)) return
     await compact(agent, 'quiet', tokens)
   }
 
@@ -160,9 +168,12 @@ export function apply(ctx, config = {}) {
     cancelTimer(state)
     if (status !== 'idle') return
 
+    // 先用 O(1) 的投影值预筛；离软阈值足够远就不做 O(surface) 的精确测量。
+    const pressure = pressureOf(agent)
+    if (pressure !== undefined && pressure + PRESSURE_CUSHION < soft) return
+
     const tokens = tokensOf(agent)
-    const enough = tokens - state.compactedTokens >= growth
-    if (!enough) return
+    if (!grew(tokens, state)) return
 
     if (tokens >= hard) {
       void compact(agent, 'hard', tokens)
